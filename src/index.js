@@ -1,6 +1,7 @@
 import { Todo, TodoList } from "./todo";
+import "./styles.css";
 
-const defaultTodoList = new TodoList;
+const todoLists = [new TodoList()]
 
 const addTaskButton = document.querySelector('button');
 const addTaskDialog = document.querySelector('dialog');
@@ -9,21 +10,39 @@ addTaskButton.addEventListener("click", () => {
 })
 
 addTaskDialog.addEventListener("close", () => {
-    let form = document.querySelector("form");
+    const form = document.querySelector("form");
     if (addTaskDialog.returnValue === "submit") {
-        formElements = Array.from(form.elements)
-        defaultTodoList.todos.push(new Todo(formElements[0].value, formElements[1].value, formElements[2].value, formElements[3].value));
+        const formElements = Array.from(form.elements)
+        todoLists[0].todos.push(new Todo(formElements[0].value, formElements[1].value, formElements[2].value, formElements[3].value));
     }
-    displayTasks();
+    displayTasks(0);
 })
 
-function displayTasks() {
-    for (task of defaultTodoList.todos) {
-        const taskElement = document.createElement("div");
-        taskElement.textContent = task.title;
-        document.body.appendChild(taskElement);
+function displayTasks(index) {
+    const todoList = getTodoList(index);
+    const todos = todoList.querySelector(".todos");
+    console.log(todos);
+    clearTodoList(todoList);
+    for (const task of todoLists[index].todos) {
+        const taskElement = makeTodoElement(task);
+        todos.appendChild(taskElement);
     }
-
 }
 
-displayTasks();
+function makeTodoElement(task) {
+    const taskElement = document.createElement("div");
+    taskElement.textContent = task.title;
+    return taskElement;
+}
+
+function getTodoList(index) {
+    const todoLists = document.querySelector("#todo-lists");
+    const children = todoLists.children;
+    return children[index];
+}
+
+function clearTodoList(todoList) {
+    todoList.querySelector(".todos").replaceChildren();
+}
+
+displayTasks(0);
