@@ -38,8 +38,6 @@ export function removeList(listIndex) {
 export function addTask(listIndex, title, description, dueDate, priority) {
     const todoLists = todoDatabase.todoLists;
     const task = new Todo(title, description, dueDate, priority);
-    console.log(listIndex);
-    console.log(todoLists[listIndex]);
     task.index = todoLists[listIndex].todos.length;
     todoLists[listIndex].todos.push(task);
     todoDatabase.todoLists = todoLists;
@@ -47,13 +45,12 @@ export function addTask(listIndex, title, description, dueDate, priority) {
 
 export function removeTask(listIndex, taskIndex) {
     const todoLists = todoDatabase.todoLists;
-    if (listIndex >= 0 &&
-        listIndex < todoLists.length &&
-        taskIndex >= 0 &&
-        taskIndex < todoLists[listIndex].todos.length) {
-        console.log(todoLists[listIndex].todos);
+    if (listIndex >= 0 && listIndex < todoLists.length && taskIndex >= 0 && taskIndex < todoLists[listIndex].todos.length) {
         todoLists[listIndex].todos.splice(taskIndex, 1);
-        console.log(todoLists[listIndex].todos); 
         todoDatabase.todoLists = todoLists;
     }
+}
+
+export function getTasksFromList(listIndex) {
+    return todoDatabase.todoLists[listIndex].todos;
 }
