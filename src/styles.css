@@ -31,6 +31,7 @@ body {
     border-radius: 5px;
     min-width: 20rem;
     padding: 0 2rem;
+    padding-bottom: 30px;
 }
 
 #todo-list-1 {
@@ -43,7 +44,6 @@ body {
 button.add-task {
     grid-column-start: 1;
     height: 30px;
-    cursor: pointer;
 }
 
 h1 {
@@ -60,7 +60,31 @@ h1 {
 .todos {
     grid-row-start: 2;
     display: grid;
-    grid-template-rows: repeat(10, 1fr);
+    grid-template-rows: repeat(5, 1fr);
+    gap: 30px;
     height: 100%;
     grid-row-end: -1;
+}
+
+.task-title {
+    display: inline;
+    margin-left: 10px;
+}
+
+button.checkbox {
+    background-image: url("./img/checkbox-blank-circle-outline.svg");
+    background-repeat: no-repeat;
+    background-position: 50% 50%;
+    height: 1.25rem;
+    width: 1.25rem;
+    border: none;
+    background-color: rgba(255, 255, 255, 0);
+}
+
+span.background {
+    display: none;
+}
+
+button {
+    cursor: pointer;
 }
