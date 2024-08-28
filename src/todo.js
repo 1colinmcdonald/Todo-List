@@ -54,3 +54,14 @@ export function removeTask(listIndex, taskIndex) {
 export function getTasksFromList(listIndex) {
     return todoDatabase.todoLists[listIndex].todos;
 }
+
+export function getTodoLists() {
+    return todoDatabase.todoLists;
+}
+
+export function renameList(index, newName) {
+    const newVersion = todoDatabase.todoLists
+    console.log(`index: ${index}`);
+    newVersion[index].name = newName;
+    todoDatabase.todoLists = newVersion;
+}
