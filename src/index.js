@@ -6,7 +6,6 @@ const addTaskDialog = document.querySelector('dialog.add-task');
 const addListButton = document.querySelector('button.add-list');
 const addListDialog = document.querySelector('dialog.add-list')
 const renameListDialog = document.querySelector("dialog.rename-list");
-const cancelRename = document.querySelector("#cancel-rename-list");
 renameListDialog.addEventListener("keydown", (e) => {
     if (e.key === "Escape") {
         renameListDialog.returnValue = "cancel";
@@ -41,10 +40,8 @@ addListDialog.addEventListener("close", () => {
 })
 
 renameListDialog.addEventListener("close", () => {
-    console.log("sup");
     const form = document.querySelector("form.rename-list");
     if (renameListDialog.returnValue !== "cancel") {
-        console.log(renameListDialog.returnValue)
         const formElements = Array.from(form.elements);
         renameList(renameListDialog.returnValue, formElements[0].value);
         displayLists();
@@ -55,7 +52,6 @@ displayLists();
 
 function displayLists() {
     const lists = getTodoLists();
-    console.log(lists);
     const listsElement = document.querySelector("#todo-lists");
     listsElement.replaceChildren();
     for (let i = 0; i < lists.length; i++) {
@@ -72,7 +68,6 @@ function displayLists() {
         })
         listTitle.classList.add("list-title");
         listTitle.textContent = lists[i].name;
-        console.log(lists[i].name);
         listElement.appendChild(listTitle);
         const todos = document.createElement("div");
         todos.classList.add("todos");

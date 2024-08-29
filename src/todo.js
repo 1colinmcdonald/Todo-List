@@ -18,13 +18,18 @@ class TodoList {
 }
 
 if (todoDatabase.todoLists.length === 0) {
+    console.log("hello");
     todoDatabase.todoLists = [new TodoList("Default Todo List")]
+    todoDatabase.todoLists;
 }
 
 export function addList(name) {
+    console.log("1");
     const todoLists = todoDatabase.todoLists;
+    console.log("2");
     todoLists.push(new TodoList(name));
     todoDatabase.todoLists = todoLists;
+    console.log(todoDatabase.todoLists);
 }
 
 export function removeList(listIndex) {
@@ -61,7 +66,6 @@ export function getTodoLists() {
 
 export function renameList(index, newName) {
     const newVersion = todoDatabase.todoLists
-    console.log(`index: ${index}`);
     newVersion[index].name = newName;
     todoDatabase.todoLists = newVersion;
 }

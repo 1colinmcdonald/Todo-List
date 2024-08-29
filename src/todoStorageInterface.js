@@ -2,8 +2,6 @@ class TodoDatabase {
     constructor() {
         if (!localStorage.getItem("todoLists")) {
             localStorage.todoLists = JSON.stringify([]);
-        } else {
-            this.todoLists = JSON.parse(localStorage.todoLists);
         }
     }
     set todoLists(todoLists) {
@@ -11,6 +9,8 @@ class TodoDatabase {
     }
 
     get todoLists() {
+        console.log(`Todo lists: ${localStorage.todoLists} end`);
+        console.log(JSON.parse(localStorage.todoLists));
         return JSON.parse(localStorage.todoLists);
     }
 }
