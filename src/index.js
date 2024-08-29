@@ -12,6 +12,15 @@ renameListDialog.addEventListener("keydown", (e) => {
     }
 })
 addTaskButton.addEventListener("click", () => {
+    const listSelect = document.querySelector("#list-select");
+    listSelect.replaceChildren();
+    const lists = getTodoLists();
+    for (let i = 0; i < lists.length; i++) {
+        const option = document.createElement("option");
+        option.textContent = lists[i].name;
+        option.value = i;
+        listSelect.appendChild(option);
+    }
     addTaskDialog.showModal();
 })
 
@@ -23,9 +32,10 @@ addTaskDialog.addEventListener("close", () => {
     const form = document.querySelector("form.new-task");
     if (addTaskDialog.returnValue === "submit") {
         const formElements = Array.from(form.elements);
-        addTask(0, formElements[0].value, formElements[1].value, formElements[2].value, formElements[3].value);
+        console.log(formElements[7].value);
+        addTask(formElements[7].value, formElements[0].value, formElements[1].value, formElements[2].value, formElements[3].value);
         addTaskDialog.returnValue = null;
-        displayTasks(0);
+        displayTasks(formElements[7].value);
     }
     form.reset();
 })
@@ -82,7 +92,7 @@ function displayLists() {
             listElement.appendChild(deleteList);
         }
         for (const task of lists[i].todos) {
-            const taskElement = makeTodoElement(task);
+            const taskElement = makeTodoElement(task, i);
             todos.appendChild(taskElement);
         }
         listElement.appendChild(todos);
@@ -94,15 +104,16 @@ function displayLists() {
 
 function displayTasks(index) {
     const todoList = getTodoList(index);
+    console.log(index);
     const todos = todoList.querySelector(".todos");
     clearTodoList(todoList);
     for (const task of getTasksFromList(index)) {
-        const taskElement = makeTodoElement(task);
+        const taskElement = makeTodoElement(task, index);
         todos.appendChild(taskElement);
     }
 }
 
-function makeTodoElement(task) {
+function makeTodoElement(task, listIndex) {
     const taskElement = document.createElement("div");
     const checkBoxButton = document.createElement("button");
     const title = document.createElement("div");
@@ -112,8 +123,9 @@ function makeTodoElement(task) {
     checkBoxButton.appendChild(background);
     checkBoxButton.name = "Complete task " + task.title;
     checkBoxButton.addEventListener("click", () => {
-        removeTask(0, getTaskIndex(taskElement));
-        displayTasks(0);
+        const list = taskElement.parentElement.parentElement
+        removeTask(listIndex, getTaskIndex(taskElement));
+        displayTasks(listIndex);
     })
     taskElement.appendChild(checkBoxButton);
     title.textContent = task.title;
