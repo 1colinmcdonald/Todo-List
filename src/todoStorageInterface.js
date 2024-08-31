@@ -9,8 +9,6 @@ class TodoDatabase {
     }
 
     get todoLists() {
-        console.log(`Todo lists: ${localStorage.todoLists} end`);
-        console.log(JSON.parse(localStorage.todoLists));
         return JSON.parse(localStorage.todoLists);
     }
 }

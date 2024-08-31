@@ -1,12 +1,13 @@
 import todoDatabase from "./todoStorageInterface";
 
 class Todo {
-    constructor(title, description, dueDate, priority) {
+    constructor(title, description, dueDate, priority, list) {
         this.title = title;
         this.description = description;
         this.dueDate = dueDate;
         this.priority = priority;
         this.dateCreated = Date.now();
+        this.list = list;
     }
 }
 
@@ -18,18 +19,14 @@ class TodoList {
 }
 
 if (todoDatabase.todoLists.length === 0) {
-    console.log("hello");
     todoDatabase.todoLists = [new TodoList("Default Todo List")]
     todoDatabase.todoLists;
 }
 
 export function addList(name) {
-    console.log("1");
     const todoLists = todoDatabase.todoLists;
-    console.log("2");
     todoLists.push(new TodoList(name));
     todoDatabase.todoLists = todoLists;
-    console.log(todoDatabase.todoLists);
 }
 
 export function removeList(listIndex) {
@@ -42,7 +39,7 @@ export function removeList(listIndex) {
 
 export function addTask(listIndex, title, description, dueDate, priority) {
     const todoLists = todoDatabase.todoLists;
-    const task = new Todo(title, description, dueDate, priority);
+    const task = new Todo(title, description, dueDate, priority, listIndex);
     task.index = todoLists[listIndex].todos.length;
     todoLists[listIndex].todos.push(task);
     todoDatabase.todoLists = todoLists;
@@ -68,4 +65,28 @@ export function renameList(index, newName) {
     const newVersion = todoDatabase.todoLists
     newVersion[index].name = newName;
     todoDatabase.todoLists = newVersion;
+}
+
+export function editTask(oldListIndex, newListIndex, taskIndex, newTitle, newDescription, newDueDate, newPriority) {
+    const todoLists = todoDatabase.todoLists;
+    if (newListIndex !== oldListIndex) {
+        todoLists[oldListIndex].todos.splice(taskIndex, 1);
+        const task = new Todo(newTitle, newDescription, newDueDate, newPriority, newListIndex);
+        task.index = todoLists[newListIndex].todos.length;
+        todoLists[newListIndex].todos.push(task);
+    } else {
+        todoLists[oldListIndex].todos[taskIndex].title = newTitle;
+        todoLists[oldListIndex].todos[taskIndex].description = newDescription;
+        todoLists[oldListIndex].todos[taskIndex].dueDate = newDueDate;
+        todoLists[oldListIndex].todos[taskIndex].priority = newPriority;
+    }
+    todoDatabase.todoLists = todoLists;
+    console.log(`todoDatabase.todoLists: ${todoDatabase.todoLists[1].todos}`);
+}
+
+export function getTask(listIndex, taskIndex) {
+    console.log(`listIndex: ${listIndex}`);
+    console.log(`taskIndex: ${taskIndex}`);
+    console.log(todoDatabase.todoLists[listIndex].todos);
+    return todoDatabase.todoLists[listIndex].todos[taskIndex];
 }

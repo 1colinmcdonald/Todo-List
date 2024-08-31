@@ -30,7 +30,7 @@ body {
     display: grid;
     grid-template-rows: 6rem 1fr;
     border-radius: 5px;
-    min-width: 20rem;
+    min-width: 40rem;
     padding: 0 2rem;
     padding-bottom: 30px;
 }
@@ -57,7 +57,7 @@ button.add-list {
 h1 {
     grid-column-end: 3;
 }
-
+    
 .list-title {
     border: none;
     border-bottom: 1px black solid;
@@ -78,8 +78,19 @@ h1 {
 }
 
 .task-title {
-    display: inline;
+    /* text-align: left; */
+    font-size: 1rem;
+}
+
+.task-info {
     margin-left: 10px;
+    background-color: rgba(255,255, 255, 0);
+    border: none;
+    text-align: left;
+    font-size: 1rem;
+    display: grid;
+    grid-template-columns: 300px 200px;
+
 }
 
 button.checkbox {
@@ -111,8 +122,10 @@ button {
 }
 
 .task {
-    display: flex;
+    display: grid;
+    grid-template-columns: min-content 500px;
     align-items: center;
+    border: 1px black solid;
 }
 
 button.add-task {
