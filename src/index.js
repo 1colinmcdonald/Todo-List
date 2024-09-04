@@ -36,21 +36,30 @@ addTaskDialog.addEventListener("close", () => {
     const form = document.querySelector("form.new-task");
     if (addTaskDialog.returnValue === "submit") {
         const formElements = Array.from(form.elements);
-        addTask(formElements[7].value, formElements[0].value, formElements[1].value, formElements[2].value, formElements[3].value);
+        const task = addTask(formElements[7].value, formElements[0].value, formElements[1].value, formElements[2].value, formElements[3].value);
         addTaskDialog.returnValue = null;
-        displayTasks(formElements[7].value);
+        addTaskToDom(task);
     }
     form.reset();
 });
+
+function addTaskToDom(task) {
+    const list = document.querySelectorAll(".todos")[task.list]
+    list.appendChild(makeTodoElement(task, task.list));
+    list.scrollTop = list.scrollHeight;
+}
 
 editTaskDialog.addEventListener("close", () => {
     const form = document.querySelector("form.edit-task");
     const formData = new FormData(form);
     if (editTaskDialog.returnValue === "submit") {
-        const formElements = Array.from(form.elements);
         console.log(`new-list-index: ${formData.get("new-index")}`);
         editTask(...["old-list-index", "new-list-index", "task-index", "new-title", "new-description", "new-due-date", "new-priority"].map((x) => formData.get(x)));
-        displayLists();
+        if (formData.get("old-list-index") === formData.get("new-list-index")) {
+            updateTask(formData.get("old-list-index"), formData.get("task-index"));
+        } else {
+            displayLists();
+        }
     }
 
 })
@@ -141,7 +150,7 @@ function makeTodoElement(task, listIndex) {
     background.classList.add("background");
     checkBoxButton.appendChild(background);
     checkBoxButton.name = "Complete task " + task.title;
-    checkBoxButton.addEventListener("click", () => {
+    checkBoxButton.addEventListener("click", async () => {
         const list = taskElement.parentElement.parentElement
         removeTask(listIndex, getTaskIndex(taskElement));
         displayTasks(listIndex);
@@ -168,6 +177,7 @@ function makeTodoElement(task, listIndex) {
         document.querySelector("#edit-task-index").value = currentTask.index;
         document.querySelector("#old-list-index").value = currentTask.list;
         newTitle.value = currentTask.title;
+        newTitle.select();
         newDescription.value = currentTask.description;
         newDueDate.value = currentTask.dueDate;
         const lists = getTodoLists();
@@ -206,6 +216,16 @@ function getTodoList(index) {
 
 function clearTodoList(todoList) {
     todoList.querySelector(".todos").replaceChildren();
+}
+
+function updateTask(listIndex, taskIndex) {
+    const task = getTask(listIndex, taskIndex);
+    const taskInfo = document
+        .querySelectorAll(".todo-list")[listIndex]
+        .querySelector(".todos").children[taskIndex]
+        .querySelector(".task-info");
+    taskInfo.querySelector(".task-title").textContent = task.title;
+    taskInfo.querySelector(".due-date").textContent = task.dueDate;
 }
 
 // Helper function

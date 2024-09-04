@@ -43,6 +43,7 @@ export function addTask(listIndex, title, description, dueDate, priority) {
     task.index = todoLists[listIndex].todos.length;
     todoLists[listIndex].todos.push(task);
     todoDatabase.todoLists = todoLists;
+    return task
 }
 
 export function removeTask(listIndex, taskIndex) {
@@ -69,6 +70,9 @@ export function renameList(index, newName) {
 
 export function editTask(oldListIndex, newListIndex, taskIndex, newTitle, newDescription, newDueDate, newPriority) {
     const todoLists = todoDatabase.todoLists;
+    oldListIndex = Number(oldListIndex)
+    newListIndex = Number(newListIndex)
+    taskIndex = Number(taskIndex);
     if (newListIndex !== oldListIndex) {
         todoLists[oldListIndex].todos.splice(taskIndex, 1);
         const task = new Todo(newTitle, newDescription, newDueDate, newPriority, newListIndex);
@@ -81,7 +85,6 @@ export function editTask(oldListIndex, newListIndex, taskIndex, newTitle, newDes
         todoLists[oldListIndex].todos[taskIndex].priority = newPriority;
     }
     todoDatabase.todoLists = todoLists;
-    console.log(`todoDatabase.todoLists: ${todoDatabase.todoLists[1].todos}`);
 }
 
 export function getTask(listIndex, taskIndex) {

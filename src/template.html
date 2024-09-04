@@ -22,11 +22,11 @@
             </div>
             <div class="description">
                 <label for="description">Description</label>
-                <textarea name="description" id="description"></textarea>
+                <textarea name="description" id="description" rows="3" cols="40" maxlength="87"></textarea>
             </div>
-            <div class="dueDate">
+            <div class="due-date-input">
                 <label for="due-date">Due date</label>
-                <input type="datetime-local" id="due-date">
+                <input type="date" id="due-date">
             </div>
             <fieldset>
                 <legend>Priority</legend>
@@ -42,8 +42,10 @@
 
             </fieldset>
 
-            <label for="list-select">List:</label>
-            <select name="list" id="list-select"></select>
+            <div class="list-select">
+                <label for="list-select">List:</label>
+                <select name="list" id="list-select"></select>
+            </div>
             <div class="buttons">
                 <button id="submit-task-form" value="submit" formmethod="dialog">Add task</button>
                 <button value="cancel" formnovalidate>Cancel</button>
@@ -82,13 +84,13 @@
             </div>
             <div class="description">
                 <label for="new-description">Description</label>
-                <textarea name="new-description" id="new-description"></textarea>
+                <textarea name="new-description" id="new-description" rows="3" cols="40" maxlength="87"></textarea>
             </div>
-            <div class="dueDate">
+            <div class="due-date-input">
                 <label for="new-due-date">Due date</label>
-                <input type="datetime-local" id="new-due-date" name="new-due-date">
+                <input type="date" id="new-due-date" name="new-due-date">
             </div>
-            <fieldset>
+            <fieldset class="priority">
                 <legend>Priority</legend>
                 <div><input type="radio" id="new-high" name="new-priority" value="high">
                     <label for="new-high">High</label>
@@ -102,8 +104,10 @@
 
             </fieldset>
 
-            <label for="new-list-select">List:</label>
-            <select name="new-list-index" id="new-list-select"></select>
+            <div class="list-select">
+                <label for="new-list-select">List:</label>
+                <select name="new-list-index" id="new-list-select"></select>
+            </div>
             <input type="hidden" id="edit-task-index" name="task-index">
             <input type="hidden" id="old-list-index" name="old-list-index">
             <div class="buttons">
