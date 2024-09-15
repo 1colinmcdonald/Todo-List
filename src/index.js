@@ -1,5 +1,6 @@
 import { addTask, getTasksFromList, removeTask, getTodoLists, addList, removeList, renameList, editTask, getTask } from "./todo";
 import "./styles.css";
+import { format } from "date-fns";
 
 const addTaskButton = document.querySelector('button.add-task');
 const addTaskDialog = document.querySelector('dialog.add-task');
@@ -34,9 +35,10 @@ addListButton.addEventListener("click", () => {
 
 addTaskDialog.addEventListener("close", () => {
     const form = document.querySelector("form.new-task");
+    const formData = new FormData(form);
     if (addTaskDialog.returnValue === "submit") {
         const formElements = Array.from(form.elements);
-        const task = addTask(formElements[7].value, formElements[0].value, formElements[1].value, formElements[2].value, formElements[3].value);
+        const task = addTask(formElements[7].value, ...["title", "description", "due-date", "priority"].map((x) => formData.get(x)));
         addTaskDialog.returnValue = null;
         addTaskToDom(task);
     }
@@ -53,12 +55,14 @@ editTaskDialog.addEventListener("close", () => {
     const form = document.querySelector("form.edit-task");
     const formData = new FormData(form);
     if (editTaskDialog.returnValue === "submit") {
-        console.log(`new-list-index: ${formData.get("new-index")}`);
-        editTask(...["old-list-index", "new-list-index", "task-index", "new-title", "new-description", "new-due-date", "new-priority"].map((x) => formData.get(x)));
+        editTaskDialog.returnValue = null;
+        const task = editTask(...["old-list-index", "new-list-index", "task-index", "new-title", "new-description", "new-due-date", "new-priority"].map((x) => formData.get(x)));
         if (formData.get("old-list-index") === formData.get("new-list-index")) {
-            updateTask(formData.get("old-list-index"), formData.get("task-index"));
+            updateTask(task.list, task.index);
         } else {
-            displayLists();
+            removeTaskFromDom(formData.get("old-list-index"), formData.get("task-index"));
+            addTaskToDom(getTask(task.list, task.index))
+            // displayLists();
         }
     }
 
@@ -67,11 +71,45 @@ editTaskDialog.addEventListener("close", () => {
 addListDialog.addEventListener("close", () => {
     const form = document.querySelector("form.new-list");
     if (addListDialog.returnValue === "submit") {
-        const formElements = Array.from(form.elements);
-        addList(formElements[0].value);
-        displayLists();
+        const name = new FormData(form).get("name");
+        addList(name);
+        addListToDom(name);
+        // displayLists();
+        window.scrollTo(document.body.scrollWidth, 0);
     }
+    form.reset();
 })
+
+function addListToDom(name) {
+    const todoLists = document.querySelector("#todo-lists");
+
+    const listElement = document.createElement("div");
+    listElement.classList.add("todo-list");
+    let listTitle = document.createElement("button");
+    listTitle.addEventListener("click", () => {
+        const dialog = document.querySelector("dialog.rename-list")
+        dialog.showModal();
+        const input = document.querySelector("#new-name");
+        input.value = name;
+        input.select();
+        dialog.returnValue = i;
+    })
+    listTitle.classList.add("list-title");
+    listTitle.textContent = name;
+    listElement.appendChild(listTitle);
+    const todos = document.createElement("div");
+    todos.classList.add("todos");
+    const deleteList = document.createElement("button");
+    deleteList.textContent = "delete";
+    deleteList.classList.add("delete-list");
+    deleteList.addEventListener("click", () => {
+        removeList(getTodoLists().length - 1);
+        displayLists();
+    })
+    listElement.appendChild(todos);
+    listElement.appendChild(deleteList);
+    todoLists.appendChild(listElement);
+}
 
 renameListDialog.addEventListener("close", () => {
     const form = document.querySelector("form.rename-list");
@@ -80,7 +118,12 @@ renameListDialog.addEventListener("close", () => {
         renameList(renameListDialog.returnValue, formElements[0].value);
         displayLists();
     }
+    form.reset();
 })
+
+function removeTaskFromDom(listIndex, taskIndex) {
+    document.querySelectorAll(".todo-list")[listIndex].querySelector(".todos").children[taskIndex].remove();
+}
 
 displayLists();
 
@@ -140,10 +183,9 @@ function displayTasks(index) {
 function makeTodoElement(task, listIndex) {
     const taskElement = document.createElement("div");
     taskElement.setAttribute("index", task.index);
-    console.log(`taskElement.getAttribute("index"): ${taskElement.getAttribute("index")}`);
     taskElement.setAttribute("list-index", listIndex);
-    console.log(`taskElement.getAttribute("list-index"): ${taskElement.getAttribute("list-index")}`);
     const checkBoxButton = document.createElement("button");
+    checkBoxButton.setAttribute("aria-label", `Complete ${task.title} task`);
     const title = document.createElement("div");
     checkBoxButton.classList.add("checkbox");
     const background = document.createElement("span");
@@ -151,6 +193,10 @@ function makeTodoElement(task, listIndex) {
     checkBoxButton.appendChild(background);
     checkBoxButton.name = "Complete task " + task.title;
     checkBoxButton.addEventListener("click", async () => {
+        taskElement.classList.add("deleted");
+        taskElement.querySelector(".task-info").classList.add("deleted");
+        taskElement.querySelector(".checkbox").classList.add("deleted");
+        await new Promise(r => setTimeout(r, 100));
         const list = taskElement.parentElement.parentElement
         removeTask(listIndex, getTaskIndex(taskElement));
         displayTasks(listIndex);
@@ -162,8 +208,6 @@ function makeTodoElement(task, listIndex) {
     taskInfo.classList.add("task-info");
     taskInfo.addEventListener("click", () => {
         const currentTaskElement = title.parentElement.parentElement;
-        console.log(currentTaskElement.getAttribute("index"));
-        console.log(`when I click list index: ${currentTaskElement.getAttribute("list-index")}`)
         currentTaskElement.setAttribute("index", getTaskIndex(currentTaskElement));
         const index = Number(currentTaskElement.getAttribute("index"))
         const currentTask = getTask(Number(currentTaskElement.getAttribute("list-index")), index);
@@ -171,7 +215,7 @@ function makeTodoElement(task, listIndex) {
         const newTitle = document.querySelector("#new-title");
         const newDescription = document.querySelector("#new-description");
         const newDueDate = document.querySelector("#new-due-date");
-        console.log(newDueDate);
+        const newPriority = document.querySelector(".edit-task>.priority");
         const newListSelect = document.querySelector("#new-list-select");
         newListSelect.replaceChildren();
         document.querySelector("#edit-task-index").value = currentTask.index;
@@ -180,6 +224,14 @@ function makeTodoElement(task, listIndex) {
         newTitle.select();
         newDescription.value = currentTask.description;
         newDueDate.value = currentTask.dueDate;
+        if (currentTask.priority) {
+            document.querySelector(`#new-${currentTask.priority}`).checked = true;
+        } else {
+            document.querySelector("#new-low").checked = false;
+            document.querySelector("#new-medium").checked = false;
+            document.querySelector("#new-high").checked = false;
+        }
+
         const lists = getTodoLists();
         for (let i = 0; i < lists.length; i++) {
             const option = document.createElement("option");
@@ -198,6 +250,16 @@ function makeTodoElement(task, listIndex) {
     dueDate.classList.add("due-date");
     dueDate.textContent = task.dueDate;
     taskInfo.appendChild(title);
+    const priority = document.createElement("div");
+    priority.classList.add("priority-display");
+    if (task.priority == "low") {
+        priority.textContent = "!"
+    } else if (task.priority == "medium") {
+        priority.textContent = "!!";
+    } else if (task.priority == "high") {
+        priority.textContent = "!!!"
+    }
+    taskInfo.appendChild(priority);
     taskInfo.appendChild(dueDate);
     taskElement.appendChild(taskInfo);
     return taskElement;
@@ -226,6 +288,18 @@ function updateTask(listIndex, taskIndex) {
         .querySelector(".task-info");
     taskInfo.querySelector(".task-title").textContent = task.title;
     taskInfo.querySelector(".due-date").textContent = task.dueDate;
+    const priority = taskInfo.querySelector(".priority-display");
+    switch (task.priority) {
+        case "low":
+            priority.textContent = "!";
+            break;
+        case "medium":
+            priority.textContent = "!!";
+            break;
+        case "high":
+            priority.textContent = "!!!";
+            break;
+    }
 }
 
 // Helper function

@@ -73,23 +73,23 @@ export function editTask(oldListIndex, newListIndex, taskIndex, newTitle, newDes
     oldListIndex = Number(oldListIndex)
     newListIndex = Number(newListIndex)
     taskIndex = Number(taskIndex);
+    let task = null;
     if (newListIndex !== oldListIndex) {
         todoLists[oldListIndex].todos.splice(taskIndex, 1);
-        const task = new Todo(newTitle, newDescription, newDueDate, newPriority, newListIndex);
+        task = new Todo(newTitle, newDescription, newDueDate, newPriority, newListIndex);
         task.index = todoLists[newListIndex].todos.length;
         todoLists[newListIndex].todos.push(task);
     } else {
-        todoLists[oldListIndex].todos[taskIndex].title = newTitle;
-        todoLists[oldListIndex].todos[taskIndex].description = newDescription;
-        todoLists[oldListIndex].todos[taskIndex].dueDate = newDueDate;
-        todoLists[oldListIndex].todos[taskIndex].priority = newPriority;
+        task = todoLists[oldListIndex].todos[taskIndex]
+        task.title = newTitle;
+        task.description = newDescription;
+        task.dueDate = newDueDate;
+        task.priority = newPriority;
     }
     todoDatabase.todoLists = todoLists;
+    return task;
 }
 
 export function getTask(listIndex, taskIndex) {
-    console.log(`listIndex: ${listIndex}`);
-    console.log(`taskIndex: ${taskIndex}`);
-    console.log(todoDatabase.todoLists[listIndex].todos);
     return todoDatabase.todoLists[listIndex].todos[taskIndex];
 }

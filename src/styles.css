@@ -4,7 +4,7 @@
 
 html {
     height: 100%;
-    width: 100%;
+    width: fit-content;
     margin: 0;
     padding: 0;
 
@@ -13,31 +13,28 @@ html {
 
 body {
     display: grid;
-    grid-template-columns: 100px repeat(3, 1fr);
+    grid-template-columns: 100px repeat(2, 50%);
     grid-template-rows: 70px 50px 1fr;
-    height: 780px;
-    width: 100%;
+    height: 100%;
     column-gap: 30px;
     margin: 0;
-    /* padding-bottom: 30px; */
     margin-bottom: 0px;
     padding-bottom: 0px;
     padding-left: 10px;
-    margin-right: 10px;
-    padding-right: 10px;
 }
 
 .todo-list {
     border: 1px solid black;
     font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
-    /* height: 100%; */
     display: grid;
     grid-template-rows: 6rem 1fr;
     border-radius: 5px;
     min-width: 40rem;
     padding: 0 2rem;
     padding-bottom: 30px;
-    margin: 10px;
+    /* margin: 10px; */
+    margin-right: 10px;
+    margin-bottom: 10px
 }
 
 #todo-lists {
@@ -49,6 +46,8 @@ body {
 button.add-list {
     grid-column-start: 1;
     height: 30px;
+    position: sticky;
+    left: 10px;
 }
 
 h1 {
@@ -78,9 +77,9 @@ h1 {
 }
 
 .task-title {
-    /* text-align: left; */
     font-size: 1rem;
     align-self: center;
+    overflow: hidden;
 }
 
 .task-info {
@@ -89,16 +88,14 @@ h1 {
     text-align: left;
     font-size: 1rem;
     display: grid;
-    grid-template-columns: 300px 200px;
+    grid-template-columns: 300px 100px 100px;
     padding: 10px;
     margin: 0;
     height: 100%;
     border-top-right-radius: 5px;
     border-bottom-right-radius: 5px;
-}
-
-.task-info:hover {
-    /* background-color: rgb(235, 235, 235) */
+    transition: color .1s ease,
+    transform .1s ease;
 }
 
 button.checkbox {
@@ -114,6 +111,7 @@ button.checkbox {
     background-color: rgba(255, 255, 255, 0);
     margin: 10px;
     padding: 0;
+    transition: transform .1s ease;
 }
 
 button.checkbox:hover {
@@ -141,12 +139,29 @@ button {
     width: fit-content;
     border-radius: 5px;
     margin-bottom: 10px;
+    /* border-bottom: 10px black solid; */
+    max-height: 200px;
+    transition: margin-bottom .1s ease, 
+    max-height .1s ease;
+    /* background-color 0..1s ease; */
+    /* transition: margin-bottom .5s; */
+}
+
+.task.deleted {
+    max-height: 0px;
+    margin-bottom: 0px;
+}
+
+.task-info.deleted, .checkbox.deleted {
+    transform: scaleY(0)
 }
 
 button.add-task {
     grid-column-start: 1;
     grid-row-start: 3;
     height: 30px;
+    position: sticky;
+    left: 10px;
 }
 
 button.delete-list {
@@ -208,4 +223,13 @@ input {
 
 label {
     font-size: 1rem;
+}
+
+.name {
+    margin-bottom: 10px;
+}
+
+.priority-display {
+    align-self: center;
+    justify-self: center;
 }
