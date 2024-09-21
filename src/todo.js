@@ -85,6 +85,7 @@ export function editTask(oldListIndex, newListIndex, taskIndex, newTitle, newDes
         task.description = newDescription;
         task.dueDate = newDueDate;
         task.priority = newPriority;
+        task.index = taskIndex;
     }
     todoDatabase.todoLists = todoLists;
     return task;

@@ -209,7 +209,8 @@ function makeTodoElement(task, listIndex) {
     taskInfo.addEventListener("click", () => {
         const currentTaskElement = title.parentElement.parentElement;
         currentTaskElement.setAttribute("index", getTaskIndex(currentTaskElement));
-        const index = Number(currentTaskElement.getAttribute("index"))
+        const index = getTaskIndex(currentTaskElement);
+        console.log(`index: ${index}`);
         const currentTask = getTask(Number(currentTaskElement.getAttribute("list-index")), index);
         currentTask.index = index;
         const newTitle = document.querySelector("#new-title");
@@ -282,6 +283,11 @@ function clearTodoList(todoList) {
 
 function updateTask(listIndex, taskIndex) {
     const task = getTask(listIndex, taskIndex);
+    const todoList = document.querySelectorAll(".todo-list")[listIndex];
+    console.log(todoList);
+    const tasks = todoList.querySelector(".todos").children;
+    console.log(tasks);
+    console.log(taskIndex);
     const taskInfo = document
         .querySelectorAll(".todo-list")[listIndex]
         .querySelector(".todos").children[taskIndex]
